@@ -10,14 +10,19 @@ class FilterableProductTable extends Component {
     this.state = {
       query: '',
       checked: false,
+      filterProducts: fileData.data,
       products: fileData.data,
     };
   }
 
   handleSearch = e => {
-    this.setState({ query: e.target.value }, () =>
-      console.log(this.state.query)
+    const { products } = this.state;
+    const value = e.target.value;
+    this.setState({ query: value });
+    const newFilteredProducts = products.filter(eachProduct =>
+      eachProduct.name.includes(value)
     );
+    this.setState({ filterProducts: newFilteredProducts });
   };
 
   handleCheckBox = () => {
@@ -29,7 +34,7 @@ class FilterableProductTable extends Component {
   };
 
   render() {
-    const { checked, products } = this.state;
+    const { checked, products, query, filterProducts } = this.state;
 
     return (
       <div className="FilterProductTable">
@@ -38,7 +43,10 @@ class FilterableProductTable extends Component {
           handleSearch={this.handleSearch}
           handleCheckBox={this.handleCheckBox}
         />
-        <ProductTable checked={checked} products={products} />
+        <ProductTable
+          checked={checked}
+          products={query.length ? filterProducts : products}
+        />
       </div>
     );
   }
